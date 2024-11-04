@@ -18,9 +18,21 @@ def home():
     </html>
     """
 
-@app.route('/hello/')
+@app.route("/hello/")
+def hello():
+  name = request.args.get("name","")
+  if name == "":
+    return "No paramater supplied"
+  else:
+    return "Hello %s" % name
+
+@app.route('/helloworld/')
 def hello_world():
     return "Hello Napier!!! :D"
+
+@app.route("/display")
+def display():
+  return "<img src='" + url_for('static', filename='uploads/file.png')+"'/>"
 
 @app.route('/static-example/img')
 def static_example_img():
@@ -56,11 +68,29 @@ def account():
        <input type="submit" name="submit" id="submit"/>
      </form>
      </body><html>"""
-
    return page
 
-@app.route("/hello/<name>")
-def hello(name):
+@app.route("/upload/", methods=["POST", "GET"])
+def account2():
+  if request.method == "POST":
+    f = request.files["datafile"]
+    f.save("static/uploads/file.png")
+    return "file Uploaded"
+  else:
+    page= """
+    <html>
+      <body>
+        <form action="" method="post" name="form" enctype="multipart/form-data">
+          <input type="file" name="datafile" />
+          <input type="submit" name="submit" id="submit"/>
+       </form>
+      </body>
+    </html>
+    """
+    return page, 200
+
+@app.route("/entername/<name>")
+def entername(name):
   return "Hello %s" % name
 
 @app.route("/add/<int:first>/<int:second>")
