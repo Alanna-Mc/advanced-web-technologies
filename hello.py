@@ -1,5 +1,5 @@
 
-from flask import Flask, url_for, request
+from flask import Flask, url_for, request, render_template
 app = Flask(__name__)
 
 @app.route ("/")
@@ -19,20 +19,42 @@ def home():
     """
 
 @app.route("/hello/")
-def hello():
-  name = request.args.get("name","")
-  if name == "":
-    return "No paramater supplied"
-  else:
-    return "Hello %s" % name
+@app.route("/hello/<name>")
+def hello(name=None):
+    return render_template("conditional.html", name=name)
 
-@app.route('/helloworld/')
-def hello_world():
-    return "Hello Napier!!! :D"
+
+@app.route("/users/")
+def users():
+    names = ["Blossom", "Buttercup","Bubbbles", "Professor"]
+    return render_template("loops.html", names=names)
+
+
+@app.route("/helloHTML/<name>")
+def helloHTML (name=None):
+    user = {"name": name}
+    return render_template("hello.html", user=user)
+
+
+@app.route("/inherits/")
+def inherits():
+    return render_template("base.html")
+
+
+@app.route("/inherits/one/")
+def inherits_one():
+    return render_template("inherits1.html")
+
+
+@app.route("/inherits/two/")
+def inherits_two():
+    return render_template("inherits2.html")
+
 
 @app.route("/display")
 def display():
   return "<img src='" + url_for('static', filename='uploads/file.png')+"'/>"
+
 
 @app.route('/static-example/img')
 def static_example_img():
@@ -41,9 +63,11 @@ def static_example_img():
   end = '">'
   return start+url+end, 200
 
+
 @app.route("/goodbye/")
 def goodbye():
   return "Goodbye Everyone :-^"
+
 
 @app.route('/force404')
 def force404():
@@ -52,6 +76,7 @@ def force404():
 @app.errorhandler(404)
 def page_not_found(error):
   return "Couldn't find the page you requested.", 404
+
 
 @app.route("/account", methods=['GET', 'POST'])
 def account():
@@ -69,6 +94,7 @@ def account():
      </form>
      </body><html>"""
    return page
+
 
 @app.route("/upload/", methods=["POST", "GET"])
 def account2():
@@ -89,13 +115,16 @@ def account2():
     """
     return page, 200
 
+
 @app.route("/entername/<name>")
 def entername(name):
   return "Hello %s" % name
 
+
 @app.route("/add/<int:first>/<int:second>")
 def add(first, second):
   return str(first+second)
+
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0',port=5001, debug=True)
